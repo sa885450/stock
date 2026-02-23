@@ -125,11 +125,9 @@ app.get('/api/warrants/hot', async (req, res) => {
     let topWarrants = await IntradaySnapshot.find({ symbol: { $in: warrants } })
       .sort({ volume: -1 }).limit(50).lean();
 
-    // 2. 沒資料則挑選觀察清單前 20 隻強制更新
-    let targetSymbols = topWarrants.map(w => w.symbol);
     if (targetSymbols.length === 0) {
       console.log('💡 [權證] 資料庫無快照，嘗試從清單直接抓取即時數據...');
-      targetSymbols = warrants.slice(0, 20);
+      targetSymbols = warrants.slice(0, 50);
     }
 
     if (targetSymbols.length === 0) {
