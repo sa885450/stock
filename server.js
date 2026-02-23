@@ -124,7 +124,8 @@ app.get('/api/warrants/hot', async (req, res) => {
     // 1. 先抓快照
     let topWarrants = await IntradaySnapshot.find({ symbol: { $in: warrants } })
       .sort({ volume: -1 }).limit(50).lean();
-
+    // 2. 篩選標的
+    let targetSymbols = topWarrants.map(w => w.symbol);
     if (targetSymbols.length === 0) {
       console.log('💡 [權證] 資料庫無快照，嘗試從清單直接抓取即時數據...');
       targetSymbols = warrants.slice(0, 50);
